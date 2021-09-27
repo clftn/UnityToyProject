@@ -2524,4 +2524,4 @@ ScriptsOnlyBuild:
   - Assets/01.Scenes/MultiRobbyScene.unity
   - Assets/01.Scenes/RoomScene.unity
   - Assets/01.Scenes/MultiGameScene.unity
-  playerPath: D:/UnityToyProject/Result/MyProject.exe
+  playerPath: C:/UnityPro/result/MyProject.exe

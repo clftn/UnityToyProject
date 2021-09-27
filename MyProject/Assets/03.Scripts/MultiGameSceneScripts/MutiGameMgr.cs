@@ -305,9 +305,12 @@ public class MutiGameMgr : MonoBehaviourPunCallbacks, IPunObservable
         }
         else // 키가 있을 경우
         {
-            int tempNum = (int)PhotonNetwork.CurrentRoom.CustomProperties["QuestTarget"];
-            tempNum++;
-            PhotonNetwork.CurrentRoom.CustomProperties["QuestTarget"] = tempNum;
+            if (PhotonNetwork.CurrentRoom.CustomProperties["QuestTarget"] != null) 
+            {
+                int tempNum = (int)PhotonNetwork.CurrentRoom.CustomProperties["QuestTarget"];
+                tempNum++;
+                PhotonNetwork.CurrentRoom.CustomProperties["QuestTarget"] = tempNum;
+            }            
         }
     }
 
