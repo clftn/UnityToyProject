@@ -30,25 +30,34 @@ public class LabMgr : MonoBehaviour
 
     int CbulletIncre = 100;
     int MbulletIncre = 10;
-    
+
+    // php 통신 타이밍 확인용 변수
+    public static bool isGunInit = false;   // 클래스 간 코루틴 끝난는지 확인용    
+    public static bool isBulletInit = false;
+
     // Start is called before the first frame update
     void Start()
     {
+        isGunInit = false;
+        isBulletInit = false;
+
         // 총아이템 초기화
-        UserInfo.InitGunData();
+        DBPhpConnectScript.GetInstance().InitGunData();
 
         // 총알 초기화
-        UserInfo.InitBulletData();
+        DBPhpConnectScript.GetInstance().InitBulletData();
 
         #region UI 부분
         if (GunCreateBtn != null)
         {
             GunCreateBtn.onClick.AddListener(GunCreateBtnFunc);
+            GunCreateBtn.gameObject.SetActive(false);
         }
 
         if (BulletCreateBtn != null)
         {
             BulletCreateBtn.onClick.AddListener(BulletCreateBtnFunc);
+            BulletCreateBtn.gameObject.SetActive(false);
         }
 
         if (BackBtn != null)
@@ -66,6 +75,29 @@ public class LabMgr : MonoBehaviour
         MbulletText.text = $"미사일 탄약 : {UserInfo.UserMBullet}";
         #endregion
 
+        RefreshItemList();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (isGunInit == true)
+        {
+            isGunInit = false;            
+            InitGunItemFunc();
+            GunCreateBtn.gameObject.SetActive(true);
+        }
+
+        if (isBulletInit == true)
+        {
+            isBulletInit = false;            
+            RefreshUserInfo();
+            BulletCreateBtn.gameObject.SetActive(true);
+        }
+    }
+
+    void InitGunItemFunc()
+    {
         GameObject a_ItemObj = null;
         ItemNodeCtrl a_ItNode = null;
 
@@ -77,14 +109,7 @@ public class LabMgr : MonoBehaviour
             a_ItNode.InitGunData(UserInfo.m_GunItems[i].gunType);
             a_ItemObj.transform.SetParent(m_Item_ScrollContent.transform, false);
         }
-
         RefreshItemList();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     void GunCreateBtnFunc()
@@ -123,7 +148,7 @@ public class LabMgr : MonoBehaviour
             for (int i = 0; i < UserInfo.m_GunItems.Count; i++)
             {
                 if (UserInfo.m_GunItems[i].isBuy == false) // 구매를 안한 경우
-                {                   
+                {
                     itemNodes[i].SetGunNodeItem(GunItemState.BeforeBuy,
                         UserInfo.m_GunItems[i].gunType,
                         UserInfo.m_GunItems[i].m_Name,
@@ -131,7 +156,7 @@ public class LabMgr : MonoBehaviour
                         UserInfo.m_GunItems[i].BuyMineral);
                 }
                 else
-                {                    
+                {
                     itemNodes[i].SetGunNodeItem(GunItemState.Active,
                         UserInfo.m_GunItems[i].gunType,
                         UserInfo.m_GunItems[i].m_Name,
@@ -153,7 +178,7 @@ public class LabMgr : MonoBehaviour
         }//else if (isBulletActive == true) 
     }//void RefreshItemList() 
 
-    void RefreshUserInfo() 
+    void RefreshUserInfo()
     {
         NickText.text = $"닉네임 : {UserInfo.g_NickName}";
         GoldText.text = $"골드 : {UserInfo.UserGold}";
@@ -172,7 +197,7 @@ public class LabMgr : MonoBehaviour
             BulletBuyFunc(a_bulletType);
         }
         else if (isBulletActive == false && isGunActive == true) // 총 구매시
-        {            
+        {
             GunBuyFunc(a_gunType);
         }
     }
@@ -187,7 +212,7 @@ public class LabMgr : MonoBehaviour
         bool a_NeedBuy = false;     // 구매 확정 여부
         m_buyGunInfo = UserInfo.m_GunItems[(int)a_gunType];
 
-        if (itemNodes != null) 
+        if (itemNodes != null)
         {
             a_GunState = itemNodes[(int)a_gunType].m_gunState;
         }
@@ -202,37 +227,37 @@ public class LabMgr : MonoBehaviour
             {
                 a_Mess = "미네랄이 부족합니다.";
             }
-            else 
+            else
             {
                 a_Mess = "아이템을 구입하시겠습니까?";
                 a_NeedBuy = true;
             }
         }//if (a_GunState == GunItemState.BeforeBuy)
-        else if(a_GunState == GunItemState.Active)
+        else if (a_GunState == GunItemState.Active)
         {
             a_Mess = "이미 구매한 상품입니다.";
         }
-        
+
         GameObject a_DlgRsc = Resources.Load("DlgPanel") as GameObject;
         GameObject a_DlgBoxObj = (GameObject)Instantiate(a_DlgRsc);
         GameObject a_Canvas = GameObject.Find("Canvas");
-        a_DlgBoxObj.transform.SetParent(a_Canvas.transform, false);        
+        a_DlgBoxObj.transform.SetParent(a_Canvas.transform, false);
 
         DlgCtrl a_Dlgbox = a_DlgBoxObj.GetComponent<DlgCtrl>();
-        if (a_Dlgbox != null) 
-        {            
+        if (a_Dlgbox != null)
+        {
             if (a_NeedBuy == true)
-            {                
+            {
                 a_Dlgbox.SetMessage(a_Mess, TryBuyGun);
             }
-            else 
-            {                
+            else
+            {
                 a_Dlgbox.SetMessage(a_Mess);
-            }            
+            }
         }
     }//void GunBuyFunc(GunType a_gunType)
 
-    void TryBuyGun() 
+    void TryBuyGun()
     {
         // 위에서 사려고하는 총의 정보를 받아와야 한다.
         // 글로벌 데이터 확인 부분
@@ -241,41 +266,12 @@ public class LabMgr : MonoBehaviour
         //UserInfo.m_GunItems[(int)m_buyGunInfo.gunType].isBuy = true;
         m_buyGunInfo.isBuy = true;
 
-        // DB 접근
-        // 총 구매 여부 확인해서 구매 여부 넣어주기
-        string query = "";
-        if (m_buyGunInfo.gunType == GunType.HeavyMachinGun)
-        {
-            query = $"INSERT INTO User_Weapon(uno, machinGun) " +
-           $"VALUES('{UserInfo.g_Unique_ID}', 1) " +
-           $"ON DUPLICATE KEY UPDATE machinGun = 1";
-        }
-        else if(m_buyGunInfo.gunType == GunType.Missile)
-        {
-            query = $"INSERT INTO User_Weapon(uno, Missile) " +
-           $"VALUES('{UserInfo.g_Unique_ID}', 1) " +
-           $"ON DUPLICATE KEY UPDATE Missile = 1";
-        }
-
-        if (query != "") 
-        {
-            MySQLConnect mysqlTestRef = new MySQLConnect();
-            mysqlTestRef.sqlcmdSel(query);
-        }
-
-        // UserGold 값 차감하기
-        query = $"INSERT INTO User_Gold(uno, Gold, Mineral)" +
-            $" VALUES('{UserInfo.g_Unique_ID}','{UserInfo.UserGold}','{UserInfo.UserMineral}')" +
-            $" ON DUPLICATE KEY UPDATE Gold='{UserInfo.UserGold}', Mineral='{UserInfo.UserMineral}'; ";
-
-        if (query != "")
-        {
-            MySQLConnect mysqlTestRef = new MySQLConnect();
-            mysqlTestRef.sqlcmdSel(query);
-        }
-
         RefreshItemList();
         RefreshUserInfo();
+
+        // DB 접근
+        DBPhpConnectScript.GetInstance().LabWeaponDataInsertfunc(UserInfo.g_Unique_ID, m_buyGunInfo.gunType.ToString(),
+            UserInfo.UserGold, UserInfo.UserMineral);
     }
 
     void BulletBuyFunc(BulletType a_bulletType)
@@ -313,7 +309,7 @@ public class LabMgr : MonoBehaviour
                 {
                     a_Mess = $"미사일 탄약을 구입하시겠습니까?";
                 }
-                
+
                 a_NeedBuy = true;
             }
         }//if (a_GunState == GunItemState.BeforeBuy)
@@ -325,19 +321,19 @@ public class LabMgr : MonoBehaviour
 
         DlgCtrl a_Dlgbox = a_DlgBoxObj.GetComponent<DlgCtrl>();
         if (a_Dlgbox != null)
-        {            
+        {
             if (a_NeedBuy == true)
-            {                
-                a_Dlgbox.SetMessage(a_Mess, TryBuyBullet);                
+            {
+                a_Dlgbox.SetMessage(a_Mess, TryBuyBullet);
             }
-            else 
+            else
             {
                 a_Dlgbox.SetMessage(a_Mess);
-            }            
+            }
         }
     }//void BulletBuyFunc(BulletType a_bulletType)
 
-    void TryBuyBullet() 
+    void TryBuyBullet()
     {
         // 위에서 사려고하는 총의 정보를 받아와야 한다.
         // 글로벌 데이터 확인 부분
@@ -348,46 +344,25 @@ public class LabMgr : MonoBehaviour
         {
             UserInfo.UserCBullet += CbulletIncre;
         }
-        else if (m_buyBulletInfo.bulletType == BulletType.Missile) 
+        else if (m_buyBulletInfo.bulletType == BulletType.Missile)
         {
             UserInfo.UserMBullet += MbulletIncre;
         }
 
+        RefreshItemList();
+        RefreshUserInfo();
+
         // DB 접근
-        // 총알 구매 여부 확인해서 구매 여부 넣어주기
-        string query = "";
         if (m_buyBulletInfo.bulletType == BulletType.HeavyMachinGun)
         {
-            query = $"INSERT INTO User_Bullet(uno, ContinueBullet) " +
-           $"VALUES('{UserInfo.g_Unique_ID}', {UserInfo.UserCBullet}) " +
-           $"ON DUPLICATE KEY UPDATE ContinueBullet = {UserInfo.UserCBullet}";
+            DBPhpConnectScript.GetInstance().LabBulletDataInsertfunc(UserInfo.g_Unique_ID, m_buyBulletInfo.bulletType.ToString(),
+                UserInfo.UserCBullet.ToString(), UserInfo.UserGold, UserInfo.UserMineral); ;
         }
         else if (m_buyBulletInfo.bulletType == BulletType.Missile)
         {
-            query = $"INSERT INTO User_Bullet(uno, MissileBullet) " +
-           $"VALUES('{UserInfo.g_Unique_ID}', {UserInfo.UserMBullet}) " +
-           $"ON DUPLICATE KEY UPDATE MissileBullet = {UserInfo.UserMBullet}";
+            DBPhpConnectScript.GetInstance().LabBulletDataInsertfunc(UserInfo.g_Unique_ID, m_buyBulletInfo.bulletType.ToString(),
+                UserInfo.UserMBullet.ToString(), UserInfo.UserGold, UserInfo.UserMineral); ;
         }
-
-        if (query != "")
-        {
-            MySQLConnect mysqlTestRef = new MySQLConnect();
-            mysqlTestRef.sqlcmdSel(query);
-        }
-
-        // UserGold 값 차감하기
-        query = $"INSERT INTO User_Gold(uno, Gold, Mineral)" +
-            $" VALUES('{UserInfo.g_Unique_ID}','{UserInfo.UserGold}','{UserInfo.UserMineral}')" +
-            $" ON DUPLICATE KEY UPDATE Gold='{UserInfo.UserGold}', Mineral='{UserInfo.UserMineral}'; ";
-
-        if (query != "")
-        {
-            MySQLConnect mysqlTestRef = new MySQLConnect();
-            mysqlTestRef.sqlcmdSel(query);
-        }
-
-        RefreshItemList();
-        RefreshUserInfo();
     }
 
     #endregion

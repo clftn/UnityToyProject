@@ -33,7 +33,7 @@ public class MonsterGenerator : MonoBehaviour
         if (points.Length > 0)
         {
             StartCoroutine(CreateMonster());
-        }
+        }        
     }
 
     // Update is called once per frame
@@ -47,7 +47,7 @@ public class MonsterGenerator : MonoBehaviour
         while (!isPlayerDie)
         {
             if (GameMgr.gameState == GameMgr.GameState.GameEnd)
-            {                
+            {
                 yield return new WaitForSeconds(EndTime); ;
             }
 

@@ -39,6 +39,7 @@ public class TitleMgr : MonoBehaviour
 
     string PlayfabTitleId = "408F1";
 
+    bool isNext = false;
     void Start()
     {
         // 로그인 관련 버튼 초기화
@@ -92,12 +93,13 @@ public class TitleMgr : MonoBehaviour
 
     void Update()
     {
-
+        TitleDbCheck();
     }
 
     #region 로그인 부분
     void LoginOKBtnLogic()
     {
+        isNext = false;
         string a_LoginId = LoginIDInputField.text;
         string a_LoginPw = LoginPWInputField.text;
 
@@ -124,6 +126,8 @@ public class TitleMgr : MonoBehaviour
             LoginInfoText.text = "이메일 형식이 맞지 않습니다.";
             return;
         }
+
+        LoginInfoText.text = "로그인 중입니다."; // 플레이팹 통신부분에 로그인 안내
 
         var request = new LoginWithEmailAddressRequest
         {
@@ -155,31 +159,15 @@ public class TitleMgr : MonoBehaviour
             UserInfo.g_UserResentLoginDate = DateTime.Now.ToString("yyyyMMddHHmmss");
         }// if (result.InfoResultPayload != null) 
 
-        // DB로 값을 넘기는 부분
-        string Query = $"INSERT INTO User_Info(uno, NickName, loginTime)" +
-            $" VALUES('{UserInfo.g_Unique_ID}','{UserInfo.g_NickName}','{UserInfo.g_UserResentLoginDate}')" +
-            $" ON DUPLICATE KEY UPDATE loginTime = '{UserInfo.g_UserResentLoginDate}'; ";
-
-        MySQLConnect mysqlTestRef = new MySQLConnect();
-        mysqlTestRef.sqlcmdSel(Query);
-
-        // 저장되어 있는 유저 골드값 미네랄 값 가져오기
-        Query = $"Select * from User_Gold where uno = '{UserInfo.g_Unique_ID}';";
-        Debug.Log(Query);
-        DataTable tempdt = mysqlTestRef.selsql(Query);
-        if (tempdt.Rows.Count > 0) 
-        {
-            int.TryParse(tempdt.Rows[0][1].ToString(), out UserInfo.UserGold);
-            int.TryParse(tempdt.Rows[0][2].ToString(), out UserInfo.UserMineral);
-        }
-
-        Resources.UnloadUnusedAssets();
-        System.GC.Collect();
-        SceneManager.LoadScene("LobbyScene");
+        //DB로 값을 넘긴다.
+        DBPhpConnectScript.GetInstance().LoginDatafunc(UserInfo.g_Unique_ID, UserInfo.g_NickName, UserInfo.g_UserResentLoginDate);
+        DBPhpConnectScript.GetInstance().LoginUserDataSelect(UserInfo.g_Unique_ID);
+        isNext = true;
     }
 
     void OnLoginFailure(PlayFabError error)
     {
+        isNext = false;
         LoginInfoText.text = "로그인에 실패했습니다.";
         Debug.Log($"원인 : {error.ErrorMessage}");
     }
@@ -240,6 +228,11 @@ public class TitleMgr : MonoBehaviour
     void RegisterSuccess(RegisterPlayFabUserResult result)
     {
         LoginInfoText.text = "회원가입 성공!";
+
+        JoinIDInputField.text = "";
+        JoinPWInputField.text = "";
+        JoinNickInputField.text = "";
+
         LoginPanel.SetActive(true);
         JoinPanel.SetActive(false);
     }
@@ -290,5 +283,19 @@ public class TitleMgr : MonoBehaviour
             invalidEmailType = true;
         }
         return match.Groups[1].Value + domainName;
+    }
+
+    void TitleDbCheck() 
+    {
+        if (isNext == true && DBPhpConnectScript.QueryOK == true)
+        {
+            isNext = false;
+            DBPhpConnectScript.QueryOK = false;
+
+            // 다음 씬으로 넘어가기
+            Resources.UnloadUnusedAssets();
+            System.GC.Collect();
+            SceneManager.LoadScene("LobbyScene");
+        }        
     }
 }

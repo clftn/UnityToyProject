@@ -55,13 +55,19 @@ public class GameMgr : MonoBehaviour
     int GoldIncre = 10;
     int MineralIncre = 10;
 
-    bool isLock = false;                    // DB 데이터 통신 여부
-    bool isDBProcess = false;               // DB 데이터 처리 여부
+    public static bool isLock = false;  // DB 데이터 통신 여부
+    public static bool isDBprocess = false;           // DB 처리 한번만 될 수 있게 하는 플래그
 
     // 총알 확인하기
     int[] HasTotBullet;
     int[] HasCurBullet;
     FireController fireRef;
+    public static bool isBulletReady = false;
+
+    void Awake()
+    {
+        gameState = GameState.GameIng; // 재시작 시 GameMgr 메모리 영역이 느림
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -113,34 +119,10 @@ public class GameMgr : MonoBehaviour
 
         HasCurBullet = new int[(int)GunType.GunCount + 1];
         HasTotBullet = new int[(int)GunType.GunCount];
-        string query = "";
-        if (UserInfo.g_Unique_ID != "")
-        {
-            query = $"select * from User_Bullet where uno = '{UserInfo.g_Unique_ID}'";
-            MySQLConnect sqlcon = new MySQLConnect();
-            DataTable dt = sqlcon.selsql(query);
 
-            HasCurBullet[0] = 25; // 기본 탄약 넣기
-            if (dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < (int)GunType.GunCount; i++)
-                {
-                    int temp = 0;
-                    int.TryParse(dt.Rows[0][1 + i].ToString(), out temp); // 컬럼 값이 0이 uno, 1이 연발총, 2가 샷건이다.
-                    HasTotBullet[i] = temp;
-                    if (i == 0)
-                    {
-                        UserInfo.UserCBullet = HasTotBullet[i];
-                        HasCurBullet[i + 1] = 100; // 연발총 기본 탄약넣기
-                    }
-                    else if (i == 1)
-                    {
-                        UserInfo.UserMBullet = HasTotBullet[i];
-                        HasCurBullet[i + 1] = 20; // 미사일 기본 탄약 넣기
-                    }
-                }
-            }
-        }
+        HasCurBullet[0] = 25; // 기본 탄약 넣기
+        isBulletReady = false;
+        DBPhpConnectScript.GetInstance().InitSinglePlaybulletData(HasCurBullet, HasTotBullet);        
 
         #endregion
 
@@ -155,9 +137,7 @@ public class GameMgr : MonoBehaviour
         ReloadStandardBullet = 25;
         CurrentBullet = ReloadStandardBullet;
         BulletText.text = $"{CurrentBullet}/{ReloadStandardBullet}";
-
-        gameState = GameState.GameIng;
-
+      
         // 마우스 감춤 처리
 #if UNITY_EDITOR
         Cursor.lockState = CursorLockMode.Confined; // 게임 창 밖으로 마우스가 안나감
@@ -167,7 +147,7 @@ public class GameMgr : MonoBehaviour
 
         // 마우스 감춤 처리
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;        
     }
 
     // Update is called once per frame
@@ -177,10 +157,10 @@ public class GameMgr : MonoBehaviour
         {
             if (isLock == false)
             {
-                if (isDBProcess == false)
+                if (isDBprocess == false) 
                 {
                     GameEndDBProcess();
-                }//if (isDBProcess == false) 
+                }                
             }//if (isLock == false) 
         }//if (gameState == GameState.GameEnd)
     }
@@ -328,17 +308,7 @@ public class GameMgr : MonoBehaviour
 
         UserInfo.UserGold += Gold;
         UserInfo.UserMineral += mineral;
-
-        // DB로 값을 넘기는 부분
-        string Query = $"INSERT INTO User_Gold(uno, Gold, Mineral)" +
-            $" VALUES('{UserInfo.g_Unique_ID}','{UserInfo.UserGold}','{UserInfo.UserMineral}')" +
-            $" ON DUPLICATE KEY UPDATE Gold='{UserInfo.UserGold}', Mineral='{UserInfo.UserMineral}'; ";
-
-        MySQLConnect mysqlTestRef = new MySQLConnect();
-        mysqlTestRef.sqlcmdSel(Query);
-
-        isLock = false;
-        isDBProcess = true;
+        DBPhpConnectScript.GetInstance().InsertSingleGameEnd();
     }
 
     internal void GameOverFunc()

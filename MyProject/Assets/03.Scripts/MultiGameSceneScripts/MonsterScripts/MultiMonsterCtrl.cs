@@ -92,7 +92,7 @@ public class MultiMonsterCtrl : MonoBehaviourPunCallbacks, IPunObservable
     void Start()
     {
         CurHp = MaxHp;
-        NetHp = MaxHp;
+        NetHp = MaxHp;        
         gameObject.tag = "Monster";
         traceDist = 10.0f;
         attackDist = 1.8f;
@@ -103,6 +103,8 @@ public class MultiMonsterCtrl : MonoBehaviourPunCallbacks, IPunObservable
         animator = this.gameObject.GetComponentInChildren<Animator>();
 
         GameMgrRef = GameObject.Find("MultiGameMgr").GetComponent<MutiGameMgr>();
+
+        monsterState = MonsterState.patrol;
     }
 
     // Update is called once per frame
@@ -133,7 +135,7 @@ public class MultiMonsterCtrl : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (isDie == false)
         {
-            if (GameMgr.gameState == GameMgr.GameState.GameEnd)
+            if (MutiGameMgr.g_GameState == MutiGameMgr.GameState.End)
             {
                 MonsterDie();
             }

@@ -647,12 +647,7 @@ public class MutiGameMgr : MonoBehaviourPunCallbacks, IPunObservable
         UserInfo.UserMineral += CurrentGetmineral;
 
         // DB로 값을 넘기는 부분
-        string Query = $"INSERT INTO User_Gold(uno, Gold, Mineral)" +
-            $" VALUES('{UserInfo.g_Unique_ID}','{UserInfo.UserGold}','{UserInfo.UserMineral}')" +
-            $" ON DUPLICATE KEY UPDATE Gold='{UserInfo.UserGold}', Mineral='{UserInfo.UserMineral}'; ";
-
-        MySQLConnect mysqlTestRef = new MySQLConnect();
-        mysqlTestRef.sqlcmdSel(Query);
+        DBPhpConnectScript.GetInstance().InsertMultiGameEnd();
     }
 
     #endregion

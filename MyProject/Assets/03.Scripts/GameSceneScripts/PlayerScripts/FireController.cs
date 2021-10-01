@@ -90,22 +90,7 @@ public class FireController : MonoBehaviour
         #region DB 정보 가져오기 - 총 소유 여부
 
         HasGun = new bool[(int)GunType.GunCount];
-        string query = "";
-        if (UserInfo.g_Unique_ID != "")
-        {
-            query = $"select * from User_Weapon where uno = '{UserInfo.g_Unique_ID}'";
-            MySQLConnect sqlcon = new MySQLConnect();
-            DataTable dt = sqlcon.selsql(query);
-            if (dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < (int)GunType.GunCount; i++)
-                {
-                    int temp = 0;
-                    int.TryParse(dt.Rows[0][1 + i].ToString(), out temp); // 컬럼 값이 0이 uno, 1이 연발총, 2가 샷건이다.
-                    HasGun[i] = Convert.ToBoolean(temp);
-                }
-            }
-        }
+        DBPhpConnectScript.GetInstance().InitSinglePlayGunData(HasGun);
 
         #endregion
 
@@ -153,6 +138,7 @@ public class FireController : MonoBehaviour
         {
             m_gunKind = GunKind.Basic;
             gameMgrRef.SwitchGun(m_gunKind);
+            isMouseClick = false;
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -160,6 +146,7 @@ public class FireController : MonoBehaviour
             {
                 m_gunKind = GunKind.Continue;
                 gameMgrRef.SwitchGun(m_gunKind);
+                isMouseClick = false;
             }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
@@ -168,6 +155,7 @@ public class FireController : MonoBehaviour
             {
                 m_gunKind = GunKind.Missile;
                 gameMgrRef.SwitchGun(m_gunKind);
+                isMouseClick = false;
             }
         }
 
