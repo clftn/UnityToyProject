@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6764548930324427800
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6764548930324427803}
+  - component: {fileID: 6764548930324427802}
+  m_Layer: 0
+  m_Name: UnitObjPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6764548930324427803
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6764548930324427800}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10000, y: -1000, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6764548930324427802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6764548930324427800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46d59d40689af874295732f6cbccae77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitObjPrefab:
+  - {fileID: 7209733066490879918, guid: 0270edb162b08184fbfc3b2df3390452, type: 3}
+  - {fileID: 4423979305701502063, guid: a6fab4dbcbb30c2478d9f4023358bbb5, type: 3}
+  - {fileID: 3384721896062029583, guid: ffa788451c4ef674da43c83a8b68fd51, type: 3}
+  - {fileID: 3384721896062029583, guid: 7b220038688c2544fbbfffeb963c9f36, type: 3}
+  - {fileID: 3384721896062029583, guid: 0ba758f9852c01f4c94149a2e152f17c, type: 3}
+  tankCountLimit: 0000000000000000000000000000000000000000
+  activeTankCount: 0000000000000000000000000000000000000000
