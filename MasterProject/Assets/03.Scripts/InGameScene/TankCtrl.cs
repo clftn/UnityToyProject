@@ -166,7 +166,7 @@ public class TankCtrl : MonoBehaviour
         if (target_Obj != null)
         {
             if (m_Type != TankType.Cannon || skill_Delay > 0.0f) // 캐논형 타입의 차량은 스킬 사용중에는 터렛회전을 여기서 하지 않는다.
-            { 
+            {
                 target_Pos = target_Obj.transform.position;
                 target_Pos.y = 0.0f;
                 Vector3 dir = target_Pos - tank_Pos;
@@ -176,11 +176,11 @@ public class TankCtrl : MonoBehaviour
             }
         }
 
-        if(GameMgr.Inst.tower_List.Count <= 0)
+        if (GameMgr.Inst.tower_List.Count <= 0)
         {
             if (m_Type != TankType.Cannon || skill_Delay > 0.0f) // 캐논형 타입의 차량은 스킬 사용중에는 터렛회전을 여기서 하지 않는다.
-            { 
-                turret_Obj.transform.rotation = Quaternion.Slerp(turret_Obj.transform.rotation, 
+            {
+                turret_Obj.transform.rotation = Quaternion.Slerp(turret_Obj.transform.rotation,
                 this.transform.rotation, Time.deltaTime * turn_Speed);
                 turret_Obj.transform.localEulerAngles = new Vector3(0.0f, turret_Obj.transform.localEulerAngles.y, 0.0f);
             }
@@ -199,7 +199,7 @@ public class TankCtrl : MonoBehaviour
         {
             navAgent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
             if ((transform.position - m_CommandTower.transform.position).magnitude > attRange)
-                navAgent.SetDestination(wayPoints[wayPoints.Length-1].position);
+                navAgent.SetDestination(wayPoints[wayPoints.Length - 1].position);
         }
         else
         {
@@ -239,7 +239,7 @@ public class TankCtrl : MonoBehaviour
         baseOffset = tarPosY - curPosY;
         navAgent.baseOffset += baseOffset;
     }
-    
+
     Ray ray;
     RaycastHit hit;
 
@@ -262,7 +262,7 @@ public class TankCtrl : MonoBehaviour
 
         if (hp_Img != null)
             hp_Img.fillAmount = curHp / maxHp;
-        
+
         MonitorTankDie();
     }
 
@@ -271,7 +271,7 @@ public class TankCtrl : MonoBehaviour
     void TankUIRotate()
     {
 
-        if(tank_Canvas != null)
+        if (tank_Canvas != null)
         {
             tank_Canvas.transform.rotation = Quaternion.Euler(0, 0, 0);
             Vector3 pos = this.transform.position;
@@ -302,7 +302,7 @@ public class TankCtrl : MonoBehaviour
 
         List<float> target_Dist = new List<float>();
         List<int> index_List = new List<int>();
-        
+
         for (int ii = 0; ii < GameMgr.Inst.tower_List.Count;)
         {
             if (GameMgr.Inst.tower_List[ii] == null)    // 타겟 리스트의 값이 null 인지 확인
@@ -334,7 +334,7 @@ public class TankCtrl : MonoBehaviour
             target_Obj = null;
             return;
         }
-            
+
 
         int target_Index = 0;
         GetMinCheck(target_Dist, out target_Index);
@@ -370,10 +370,10 @@ public class TankCtrl : MonoBehaviour
             return;
 
         float skillRange = 5.0f; // 스킬범위 (임시)
-        
+
         GameObject[] allyObjs = GameObject.FindGameObjectsWithTag("TANK"); // 아군 탱크들을 찾음
-        
-        for(int i =0; i<allyObjs.Length; i++)
+
+        for (int i = 0; i < allyObjs.Length; i++)
         {
             if (allyObjs[i] == gameObject) // 자기자신은 치료하지 않음
                 continue;
@@ -381,10 +381,12 @@ public class TankCtrl : MonoBehaviour
             if ((allyObjs[i].transform.position - transform.position).magnitude < skillRange) // 스킬 범위 내에 있는지 검사
             {
                 allyObjs[i].GetComponent<TankCtrl>().curHp += repairValue; // 체력 회복
-                if(allyObjs[i].GetComponent<TankCtrl>().curHp > 100)
+                if (allyObjs[i].GetComponent<TankCtrl>().curHp > 100)
                 {
                     allyObjs[i].GetComponent<TankCtrl>().curHp = 100;
                 }
+                if (allyObjs[i].GetComponent<TankCtrl>().hp_Img != null)
+                    allyObjs[i].GetComponent<TankCtrl>().hp_Img.fillAmount = curHp / maxHp;
                 Debug.Log(allyObjs[i].name + "을 " + repairValue + "만큼 수리함");
             }
         }
@@ -403,14 +405,14 @@ public class TankCtrl : MonoBehaviour
         if (skill_Delay > 0.0)
             return;
 
-        if(isBarrier == false)
+        if (isBarrier == false)
         {
             a_Barrier = Instantiate(barrier, transform.position, Quaternion.identity);
             a_Barrier.transform.SetParent(this.transform);
             isBarrier = true;
         }
 
-        if(isBarrier == true && a_Barrier == null)
+        if (isBarrier == true && a_Barrier == null)
         {
             isBarrier = false;
             skill_Delay = skillCool;
@@ -504,15 +506,15 @@ public class TankCtrl : MonoBehaviour
             explo_Obj.transform.SetParent(fire_Pos.transform);
             mGTimer = mGRate; // 텀 충전
             bulletIdx++;
-            if(bulletIdx == mGBullet) // 모든 탄환을 격발하고 나면 스킬쿨타임 돌기 시작
-            { 
+            if (bulletIdx == mGBullet) // 모든 탄환을 격발하고 나면 스킬쿨타임 돌기 시작
+            {
                 att_Delay = attRate; // 스킬 사용후 바로 기본공격 못하게
                 mGTimer = 0.0f;
                 bulletIdx = 0;
             }
         }
     }
-    
+
     // -------- Cannon 유닛 스킬 관련 변수
     bool isShot = false;
     GameObject missile;
@@ -560,7 +562,7 @@ public class TankCtrl : MonoBehaviour
                     enemies.RemoveAt(i);
             }
         }
-       
+
         if (enemies.Count <= 0 && isShot == false)
         {
             isMoveOn = true;   // 사거리 안에 적이 없으면 움직임
@@ -574,7 +576,7 @@ public class TankCtrl : MonoBehaviour
         if (missile == null && isShot == true) // 미사일 격추가 완료 되면
         {
             isShot = false;
-            
+
             Destroy(missileRange); // 미사일 격추가 끝나면 타격범위 보여주던거 삭제
 
             //isMoveOn = true; // 미사일 격추가 끝나면 다시 움직임.
@@ -592,17 +594,17 @@ public class TankCtrl : MonoBehaviour
         if (isShot == false && enemies.Count > 0)
         {
             isMoveOn = false; // 스킬 사용중에는 움직이지 않는다.
-            
-            if(actionTimer > 0.0f) // 시즈모드On 연출타임
-            { 
+
+            if (actionTimer > 0.0f) // 시즈모드On 연출타임
+            {
                 actionTimer -= Time.deltaTime;
             }
 
-            if(ranEnemyIdx < 0) // 적 선택
-            { 
+            if (ranEnemyIdx < 0) // 적 선택
+            {
                 ranEnemyIdx = Random.Range(0, enemies.Count);
             }
-            
+
             if (ranEnemyIdx >= 0 && ranEnemyIdx < enemies.Count)
             {
                 if (enemies[ranEnemyIdx] == null) // 조준 도중에 적이 파괴됐다면
@@ -617,16 +619,16 @@ public class TankCtrl : MonoBehaviour
                 ranEnemyIdx = -1;
                 return;
             }
-            
+
             Quaternion a_TargetDir = Quaternion.LookRotation(enemies[ranEnemyIdx].transform.position - transform.position);
             turret_Obj.transform.rotation = Quaternion.Slerp(turret_Obj.transform.rotation, a_TargetDir, Time.deltaTime * 10.0f);
-            
+
             Vector3 dir = new Vector3(0, 0.5f, 0.5f);
             cannon_Obj.transform.localRotation = Quaternion.LookRotation(dir);
 
 
             if (actionTimer <= 0.0f) // 시즈모드On 연출타임이 끝나면 미사일 발사
-            { 
+            {
                 missile = Instantiate(missilePrefab, fire_Pos.transform.position, Quaternion.identity);
                 missileRange = Instantiate(missileRangePrefab, enemies[ranEnemyIdx].transform.position, Quaternion.Euler(new Vector3(90, 0, 0))); // 미사일 타격범위 인스턴스
                 missile.GetComponent<MissileCtrl>().target_Obj = enemies[ranEnemyIdx];
@@ -656,7 +658,7 @@ public class TankCtrl : MonoBehaviour
             }
         }
 
-        if(isShot == true)
+        if (isShot == true)
         {
             StartCoroutine(ShootImp());
         }
@@ -697,7 +699,7 @@ public class TankCtrl : MonoBehaviour
         float min = a_List[0];
         a_Min = 0;
 
-        for(int ii = 0; ii < a_List.Count; ii++)
+        for (int ii = 0; ii < a_List.Count; ii++)
         {
             if (min > a_List[ii])
             {
@@ -799,7 +801,7 @@ public class TankCtrl : MonoBehaviour
         isMoveOn = false;
         isArrived = true;
 
-        if(isMoveOn == false)
+        if (isMoveOn == false)
             m_MvSource.mute = true;
     }
     #endregion
@@ -814,7 +816,7 @@ public class TankCtrl : MonoBehaviour
             //----------공격 알고리즘 추가
             //타워 리스트에 가지고 있는 탱크리스트를 찾아 현재 탱크가 사망시 같은 번호를 가진 리스트는 삭제
             int a_TankNume = 0;
-            for(int i = 0; i < m_TowerList.Length; i++)
+            for (int i = 0; i < m_TowerList.Length; i++)
             {
                 if (m_TowerList[i].m_TargetList.Count == 0)
                     continue;
@@ -822,7 +824,7 @@ public class TankCtrl : MonoBehaviour
                 for (int ii = 0; ii < m_TowerList[i].m_TargetList.Count; ii++)
                 {
                     a_TankNume = m_TowerList[i].m_TargetList[ii].GetComponent<TankCtrl>().m_TankNumber;
-                    if(a_TankNume == m_TankNumber)
+                    if (a_TankNume == m_TankNumber)
                     {
                         m_TowerList[i].m_TargetList.RemoveAt(ii);
                         m_TowerList[i].m_TowerState = TowerState.Count;

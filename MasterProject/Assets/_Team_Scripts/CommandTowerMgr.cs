@@ -33,7 +33,6 @@ public class CommandTowerMgr : MonoBehaviour
         GameMgr.Inst.m_VsHpImg.fillAmount = m_HpImg.fillAmount;
         if (m_CurHP <= 0)
         {
-            GameMgr.Inst.GoldTextSett(300);
             StartEndCtrl.Inst.g_GameState = GameState.GS_GameEnd;
         }
     }

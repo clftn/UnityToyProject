@@ -99,7 +99,6 @@ public class GlobalValue : MonoBehaviour
     IEnumerator GetStoreAttData() 
     {
         GetAttDataLock = true;  // 네트워크 중복 안되는 조치
-
         WWWForm form = new WWWForm();
         form.AddField("Input_ID", MyInfo.m_No);        
         form.AddField("Input_itemType", "1", System.Text.Encoding.UTF8);    // 공격 아이템만 가져오기
@@ -257,7 +256,7 @@ public class GlobalValue : MonoBehaviour
                     var N2 = JSON.Parse(a_ReStr2);
                     for (int i = 0; i < N2["UnitList"].Count; i++)
                     {
-                        string UnitName = N2["UnitList"][i]["UnitName"];
+                        string UnitName = N2["UnitList"][i]["UnitName"];                        
                         int UnitAtt = N2["UnitList"][i]["UnitAttack"].AsInt;
                         int UnitDef = N2["UnitList"][i]["UnitDefence"].AsInt;
                         int UnitHP = N2["UnitList"][i]["UnitHP"].AsInt;
@@ -266,6 +265,7 @@ public class GlobalValue : MonoBehaviour
                         int Unitprice = N2["UnitList"][i]["UnitPrice"].AsInt;
                         int UnitUprice = N2["UnitList"][i]["UnitUpPrice"].AsInt;
                         int UnitRange = N2["UnitList"][i]["UnitRange"].AsInt;
+                        int UnitUseable = N2["UnitList"][i]["UnitUseable"].AsInt;
                         int UnitSkill = N2["UnitList"][i]["UnitSkill"].AsInt;
 
                         a_UserUtNew = new AttUnit();
@@ -282,6 +282,7 @@ public class GlobalValue : MonoBehaviour
                         a_UserUtNew.m_Price = Unitprice;
                         a_UserUtNew.m_UpPrice = UnitUprice;
                         a_UserUtNew.m_Range = UnitRange;
+                        a_UserUtNew.ItemUsable = UnitUseable;
                         a_UserUtNew.m_SkillTime = UnitSkill;
 
                         m_AttUnitUserItem.Add(a_UserUtNew);

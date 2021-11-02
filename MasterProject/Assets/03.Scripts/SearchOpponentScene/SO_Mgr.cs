@@ -57,7 +57,6 @@ public class SO_Mgr : MonoBehaviour
     public GameObject Deck_SV_Content;
     public GameObject DeckObj;
     public Button DeckEdit_Btn;
-    public GameObject DeckEdit_Obj;
     [HideInInspector] public bool DeckEditBool = false;
     public GameObject[] DecNum_Img_Obj;
     public Sprite[] DecNum_Img;
@@ -68,6 +67,7 @@ public class SO_Mgr : MonoBehaviour
     public GameObject PanelFade;
     public GameObject DeckFade;
     public GameObject UpFade;
+    bool FadeIn_Bool = true;    //Start()시 FadeIn이 끝났는지 확인하는 변수
 
     [Header("Audio")]
     public AudioClip[] m_audioclip;
@@ -123,7 +123,10 @@ public class SO_Mgr : MonoBehaviour
         if (OI.Fight_Btn != null)
             OI.Fight_Btn.onClick.AddListener(Fight);
 
+        FadeIn_Bool = true;
+
         DBConnect();
+        Deck_Img_Update();
     }
 
     // Update is called once per frame
@@ -131,26 +134,6 @@ public class SO_Mgr : MonoBehaviour
     {
         if (TouchCover_Panel != null)
             TouchCover_Panel.SetActive(OI_Panel.OI_OnOff);
-
-        //선택한 덱 표시
-        if (GlobalValue.My_DeckInfo != null)
-        {
-            for (int i = 0; i < DecNum_Img_Obj.Length; i++)
-            {
-                if (GlobalValue.My_DeckInfo.UserDec[i] == -1)       //덱에 탱크가 배치안됐을 때
-                    DecNum_Img_Obj[i].GetComponent<Image>().sprite = DecNum_Img[GlobalValue.My_DeckInfo.UserDec[i] + 1];
-                else
-                    DecNum_Img_Obj[i].GetComponent<Image>().sprite = DecNum_Img[GlobalValue.My_DeckInfo.UserDec[i]];
-            }
-        }
-        else
-        {
-            for (int i = 0; i < DecNum_Img_Obj.Length; i++)
-            {
-                DecNum_Img_Obj[i].GetComponent<Image>().sprite = DecNum_Img[0];
-            }
-        }
-        //선택한 덱 표시
     }
 
     #region =======LeftFade
@@ -261,6 +244,7 @@ public class SO_Mgr : MonoBehaviour
             //덱
             if (N["DeckCount"] > 0)
             {
+                GlobalValue.My_DeckInfo = null;
                 for (int i = 0; i < N["DeckCount"].AsInt; i++)
                 {
                     DeckInfo m_DecNode = new DeckInfo();
@@ -293,14 +277,17 @@ public class SO_Mgr : MonoBehaviour
             Destroy(SR_Obj);
 
             //FadeIn
-            if (LeftFade != null)
-                StartCoroutine(FadeIn(LeftFade, LeftFadePos));
-
             if (RightFade != null)
                 StartCoroutine(FadeIn(RightFade, RightFadePos));
 
             if (UpFade != null)
                 StartCoroutine(FadeIn(UpFade, UpFadePos));
+
+            if (LeftFade != null)
+                yield return StartCoroutine(FadeIn(LeftFade, LeftFadePos));
+
+            FadeIn_Bool = false;
+
             //FadeIn
         }
         else
@@ -370,10 +357,20 @@ public class SO_Mgr : MonoBehaviour
 
     void CreateDeckList(DeckInfo m_Dec)
     {
+        GameObject DO = Instantiate(DeckObj, Deck_SV_Content.transform);
+        DO.GetComponent<DecNode>().m_DecInfo = m_Dec;
+
+        if (m_Dec.UserDecCount != GlobalValue.My_DeckIdx)
+            DO.GetComponent<Toggle>().isOn = false;
+        else
+            DO.GetComponent<Toggle>().isOn = true;
+
+        DO.GetComponent<Toggle>().group = Deck_SV_Content.GetComponent<ToggleGroup>();  //덱 그룹 설정
+
         DeckInfo m_DeckNode = new DeckInfo();
 
         m_DeckNode.UserDecN = m_Dec.UserDecN;
-        m_DeckNode.UserN = m_Dec.UserDecN;
+        m_DeckNode.UserN = m_Dec.UserN;
         m_DeckNode.UserDecCount = m_Dec.UserDecCount;
 
         for (int i = 0; i < 5; i++)
@@ -383,15 +380,7 @@ public class SO_Mgr : MonoBehaviour
         }
 
         Deck_List.Add(m_DeckNode);
-        GameObject DO = Instantiate(DeckObj, Deck_SV_Content.transform);
 
-        if (m_Dec.UserDecCount != GlobalValue.My_DeckIdx)
-            DO.GetComponent<Toggle>().isOn = false;
-        else
-            DO.GetComponent<Toggle>().isOn = true;
-
-        DO.GetComponent<DecNode>().m_DecInfo = m_Dec;
-        DO.GetComponent<Toggle>().group = Deck_SV_Content.GetComponent<ToggleGroup>();  //덱 그룹 설정
 
         m_DeckNode = null;
     }
@@ -427,8 +416,35 @@ public class SO_Mgr : MonoBehaviour
 
     void Go_LobbyBtnClick()
     {
+        if (FadeIn_Bool)
+            return;
+
         audio.PlayOneShot(m_audioclip[0]);
         StartCoroutine(GO_Lobby());
+    }
+
+    public void Deck_Img_Update()
+    {
+        if (GlobalValue.My_DeckIdx != -1)
+        {
+            for (int i = 0; i < DecNum_Img_Obj.Length; i++)
+            {
+                //Debug.Log(i);
+                //Debug.Log(i + "번 " + GlobalValue.My_DeckInfo.UserDec[i]);
+
+                if (GlobalValue.My_DeckInfo.UserDec[i] == -1)       //덱에 탱크가 배치안됐을 때
+                    DecNum_Img_Obj[i].GetComponent<Image>().sprite = DecNum_Img[0];
+                else
+                    DecNum_Img_Obj[i].GetComponent<Image>().sprite = DecNum_Img[GlobalValue.My_DeckInfo.UserDec[i]];
+            }
+        }
+        else
+        {
+            for (int i = 0; i < DecNum_Img_Obj.Length; i++)
+            {
+                DecNum_Img_Obj[i].GetComponent<Image>().sprite = DecNum_Img[0];
+            }
+        }
     }
 
     IEnumerator GO_Lobby()
@@ -453,7 +469,7 @@ public class SO_Mgr : MonoBehaviour
             map_Str = "InGame_Map1";
         else
             map_Str = "InGame_Map2";
-        
+
         GlobarValue.g_UserMap = (UserMap)rand;
         SceneManager.LoadScene(map_Str);
     }

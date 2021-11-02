@@ -10,7 +10,6 @@ public class DecNode : MonoBehaviour
     public Text DeckNumTxt;
     bool SelectBool = false;
 
-    bool On;
     //Start is called before the first frame update
     void Start()
     {
@@ -35,15 +34,11 @@ public class DecNode : MonoBehaviour
 
         DeckNumTxt.text = (m_DecInfo.UserDecCount + 1).ToString() + "번 덱";      //UI상
 
-        if (DeckToggle.isOn && On)
+        if (DeckToggle.isOn)
         {
             GlobalValue.My_DeckIdx = m_DecInfo.UserDecCount;
             GlobalValue.My_DeckInfo = m_DecInfo;
-            On = false;
-        }
-        else if (!DeckToggle.isOn && !On)
-        {
-            On = true;
+            SO_Mgr.Inst.Deck_Img_Update();
         }
     }
 }

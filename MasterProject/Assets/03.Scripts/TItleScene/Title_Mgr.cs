@@ -72,6 +72,8 @@ public class Title_Mgr : MonoBehaviour
         LoginUserAttDataUrl = "http://pmaker.dothome.co.kr/TeamProject/TitleScene/LoginUserAttData.php";
         LoginUserDefDataUrl = "http://pmaker.dothome.co.kr/TeamProject/TitleScene/LoginUserDefData.php";
         CreateDataInsertUrl = "http://pmaker.dothome.co.kr/TeamProject/TitleScene/CreateDataInsert.php";
+        Login_Enter = true;
+        CA_Enter = true;
     }
 
     // Update is called once per frame
@@ -210,20 +212,23 @@ public class Title_Mgr : MonoBehaviour
             if (sz.Contains("Could not Connect"))
             {
                 isCreate = false;
-                GameObject dlg = Instantiate(Resources.Load("DlgBox"), DlgParent) as GameObject;
-                dlg.GetComponent<DialogBoxCtrl>().TitleMsgDlg("경   고", "DB 접속 문제 발생");
+                CA_Enter = false;
+                GameObject dlg = Instantiate(Resources.Load("ServerRequest_DlgBox"), DlgParent) as GameObject;
+                dlg.GetComponent<DialogBoxCtrl>().TitleMsgDlg("경   고", "DB 접속 문제 발생", () => CA_Enter = true);
             }
             else if (sz.Contains("ID does exist."))
             {
                 isCreate = false;
-                GameObject dlg = Instantiate(Resources.Load("DlgBox"), DlgParent) as GameObject;
-                dlg.GetComponent<DialogBoxCtrl>().TitleMsgDlg("경   고", "중복된 아이디 생성");
+                CA_Enter = false;
+                GameObject dlg = Instantiate(Resources.Load("ServerRequest_DlgBox"), DlgParent) as GameObject;
+                dlg.GetComponent<DialogBoxCtrl>().TitleMsgDlg("경   고", "중복된 아이디 생성", () => CA_Enter = true);
             }
             else if (sz.Contains("Nickname does exist."))
             {
                 isCreate = false;
-                GameObject dlg = Instantiate(Resources.Load("DlgBox"), DlgParent) as GameObject;
-                dlg.GetComponent<DialogBoxCtrl>().TitleMsgDlg("경   고", "중복된 닉네임 생성");
+                CA_Enter = false;
+                GameObject dlg = Instantiate(Resources.Load("ServerRequest_DlgBox"), DlgParent) as GameObject;
+                dlg.GetComponent<DialogBoxCtrl>().TitleMsgDlg("경   고", "중복된 닉네임 생성", () => CA_Enter = true) ;
             }
 
             if (sz.Contains("Create Success"))

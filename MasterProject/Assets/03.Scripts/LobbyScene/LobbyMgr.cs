@@ -97,19 +97,19 @@ public class LobbyMgr : MonoBehaviour
             });
 
         if (m_MyRoomBtn != null)
-            m_MyRoomBtn.onClick.AddListener(() =>
+            m_MyRoomBtn.onClick.AddListener(() => 
             {
                 SceneManager.LoadScene("LoadingGoMyRoom");
             });
 
         LobbyStartUrl = "http://pmaker.dothome.co.kr/TeamProject/LobbyScene/LobbyStart.php";
 
-        StartCoroutine(LobbyStartCo());
+        StartCoroutine(LobbyStartCo());  
     }
 
     void Update()
     {
-
+        m_UserNameText.text = MyInfo.m_Nick + "님, 반갑습니다.";
     }
 
     public void LogOutFunc()
@@ -129,7 +129,7 @@ public class LobbyMgr : MonoBehaviour
     {
         WWWForm form = new WWWForm();
         form.AddField("Input_user", MyInfo.m_No);
-
+        
         UnityWebRequest a_www = UnityWebRequest.Post(LobbyStartUrl, form);
         yield return a_www.SendWebRequest();
 
@@ -141,16 +141,18 @@ public class LobbyMgr : MonoBehaviour
 
             var JSONResult = JSON.Parse(sz);
 
-            if (JSONResult["UserInfo"] != null)
+            if(JSONResult["UserInfo"] != null)
             {
-                m_UserNameText.text = JSONResult["UserInfo"]["UserNick"] + "님, 반갑습니다.";
-                m_WinLoseText.text = "전적 : " + JSONResult["UserInfo"]["UserWin"].AsInt + "승  "
-                                               + JSONResult["UserInfo"]["UserDefeat"].AsInt + "패";
-                m_UserGoldText.text = "보유 골드 : " + JSONResult["UserInfo"]["UserGold"].AsInt;
+                m_UserNameText.text = JSONResult["UserInfo"][0]["UserNick"] + "님, 반갑습니다.";
+
+                m_WinLoseText.text = "전적 : " + JSONResult["UserInfo"][0]["UserWin"].AsInt + "승  " 
+                                               + JSONResult["UserInfo"][0]["UserDefeat"].AsInt + "패";
+
+                m_UserGoldText.text = "보유 골드 : " + JSONResult["UserInfo"][0]["UserGold"].AsInt;
             }
 
             if (JSONResult["Ranking"]["RkCount"] != null)
-                m_rowsCount = JSONResult["Ranking"]["RkCount"].AsInt;
+                    m_rowsCount = JSONResult["Ranking"]["RkCount"].AsInt;
 
             if (JSONResult["Ranking"]["RkList"] != null)
             {
@@ -175,24 +177,25 @@ public class LobbyMgr : MonoBehaviour
                 }
             }
 
-            if (JSONResult["RandomItem"] != null)
-            {
-                m_GetRandomDBIndex = Random.Range(0, JSONResult["RandomItem"].Count);
-            }
+                if (JSONResult["RandomItem"] != null)
+                {
+                    m_GetRandomDBIndex = Random.Range(0, JSONResult["RandomItem"].Count);
+                }
 
             if (JSONResult["RandomItem"][m_GetRandomDBIndex] != null)
             {
                 m_GetRandomItemName = JSONResult["RandomItem"][m_GetRandomDBIndex]["ItemName"];
+                Debug.Log(m_GetRandomItemName);
                 m_RandomItemNameText.text = m_GetRandomItemName;
             }
 
             if (JSONResult["RandomItem"][m_GetRandomDBIndex]["KindOfItem"] != null)
-                m_GetRandomItemNo = JSONResult["RandomItem"][m_GetRandomDBIndex]["KindOfItem"].AsInt;
+                LobbyMgr.m_GetRandomItemNo = JSONResult["RandomItem"][m_GetRandomDBIndex]["KindOfItem"].AsInt;
 
             if (JSONResult["RandomItem"][m_GetRandomDBIndex]["isAttack"] != null)
-                m_isAttack = JSONResult["RandomItem"][m_GetRandomDBIndex]["isAttack"].AsInt;
+                LobbyMgr.m_isAttack = JSONResult["RandomItem"][m_GetRandomDBIndex]["isAttack"].AsInt;
 
-            if (m_isAttack == 0)
+            if(m_isAttack == 0)
             {
                 m_RandomItemPrefab = m_DefRandomItemList[m_GetRandomItemNo - 1];
                 GameObject obj = (GameObject)Instantiate(m_RandomItemPrefab, new Vector3(-0.2f, -2.0f, 0), Quaternion.identity);
@@ -208,6 +211,8 @@ public class LobbyMgr : MonoBehaviour
             //Debug.Log("KindOfItem : " + m_GetRandomItemNo);
             //Debug.Log("m_isAttack : " + m_isAttack);
         }
-    }
+    } 
 
 }
+
+    

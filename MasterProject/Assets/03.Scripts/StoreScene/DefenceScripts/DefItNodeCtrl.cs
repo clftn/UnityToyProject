@@ -90,8 +90,8 @@ public class DefItNodeCtrl : MonoBehaviour
             m_UnitIconImg.sprite = GlobalValue.m_DefUnitItem[(int)a_UnitType].m_IconImg;
         m_UnitLevelText.text = $"Level : {GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Level}";
         m_UnitPriceText.text = $"{GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Price}";
-        m_UnitAttText.text = $"유닛 공격력 : {GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Att}";
-        m_UnitHPText.text = $"유닛 HP : {GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Hp}";
+        m_UnitAttText.text = $"유닛 공격력 : {GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Att + (GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Att * (GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Level - 1)) / GlobalValue.UnitIncreValue}";
+        m_UnitHPText.text = $"유닛 HP : {GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Hp + (GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Hp * (GlobalValue.m_DefUnitItem[(int)a_UnitType].m_Level - 1)) / GlobalValue.UnitIncreValue}";
     }
 
     public void SetState(AttUnitState a_UnitState, int a_Level = 1)
@@ -110,8 +110,8 @@ public class DefItNodeCtrl : MonoBehaviour
             m_UnitPriceText.text = m_UpPrice.ToString();
             m_UnitIconImg.color = new Color32(255, 255, 255, 255); //new Color32(110, 110, 110, 255);
             m_UnitLevelText.text = $"Level : {m_Level}";
-            m_UnitAttText.text = $"유닛 공격력 : {m_Att + m_Level * GlobalValue.UnitIncreValue}";
-            m_UnitHPText.text = $"유닛 HP : {m_Hp + m_Level * GlobalValue.UnitIncreValue}";
+            m_UnitAttText.text = $"유닛 공격력 : {m_Att + (m_Att * (m_Level - 1) / GlobalValue.UnitIncreValue)}";
+            m_UnitHPText.text = $"유닛 HP : {m_Hp + (m_Hp * (m_Level - 1) / GlobalValue.UnitIncreValue)}";
         }
     }//public void SetState(CrState a_CrState, int a_Price, int a_Lv = 0)
 }

@@ -70,9 +70,12 @@ public class UnitInfoMgr : MonoBehaviour
     public void UserInfoBtnClick(int _index)
     {
         m_UnitName.text = "이름 : " + GlobarValue.g_UnitListInfo[_index].m_UnitName;
-        m_UnitAttack.text = "공격력 : " + GlobarValue.g_UnitListInfo[_index].m_UnitAttack.ToString();
-        m_UnitDefance.text = "방어력 : " + GlobarValue.g_UnitListInfo[_index].m_UnitDefence.ToString();
-        m_UnitHP.text = "체력 : " + GlobarValue.g_UnitListInfo[_index].m_UnitHP.ToString();
+        int Attack = (int)GlobarValue.g_UnitListInfo[_index].m_UnitAttack;
+        int Def = (int)GlobarValue.g_UnitListInfo[_index].m_UnitDefence;
+        Attack = Attack + (Attack * (GlobarValue.g_UnitListInfo[_index].m_UnitLevel - 1) / 10);
+        Def = Def + (Def * (GlobarValue.g_UnitListInfo[_index].m_UnitLevel - 1) / 10);
+        m_UnitAttack.text = "공격력 : " + Attack.ToString();
+        m_UnitDefance.text = "방어력 : " + Def.ToString(); m_UnitHP.text = "체력 : " + GlobarValue.g_UnitListInfo[_index].m_UnitHP.ToString();
         m_UnitAttSpd.text = "공격속도 : " + GlobarValue.g_UnitListInfo[_index].m_UnitAttSpd.ToString();
         m_UnitMoveSpd.text = "이동속도 : " + GlobarValue.g_UnitListInfo[_index].m_UnitMoveSpd.ToString();
         m_UnitPrice.text = "가격 : " + GlobarValue.g_UnitListInfo[_index].m_UnitPrice.ToString();

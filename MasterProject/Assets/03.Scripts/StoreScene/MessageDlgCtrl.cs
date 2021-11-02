@@ -65,40 +65,76 @@ public class MessageDlgCtrl : MonoBehaviour
     //구매 확인 함수
     void BuyOKFunc()
     {
-
-        if (MyInfo.m_Gold - GlobalValue.m_DefUnitItem[buy_KindOfItem - 1].m_Price >= 0)
+        if (buy_isAttack == 0) // 방어 아이템의 경우
         {
-
-            if (isTry == false)
+            if (MyInfo.m_Gold - GlobalValue.m_DefUnitItem[buy_KindOfItem - 1].m_Price >= 0)
             {
-                isTry = true;
-                if (m_AttUnitState == AttUnitState.BeforeBuy)
+                if (isTry == false)
                 {
-                    StartCoroutine(BuyOkFunc());    // 구매로 넘어가도록
+                    isTry = true;
+                    if (m_AttUnitState == AttUnitState.BeforeBuy)
+                    {
+                        StartCoroutine(BuyOkFunc());    // 구매로 넘어가도록                    
+                    }
+                    else
+                    {
+                        StartCoroutine(UpdateFunc());
+                    }
                 }
                 else
                 {
-                    StartCoroutine(UpdateFunc());
+                    InfoText.text = "구매 작업을 진행중입니다. 기다리세요";
                 }
             }
             else
             {
-                InfoText.text = "구매 작업을 진행중입니다. 기다리세요";
+                InfoText.text = "골드가 부족합니다.";
+                if (isGoldTxt == true)
+                {
+                    gameObject.SetActive(false);
+                    InfoText.text = "구입하시겠습니까?";
+                }
+
+
+                isGoldTxt = !isGoldTxt;
+
             }
-        }
-        else
+        }//if (buy_isAttack == 0)
+        else if (buy_isAttack == 1) // 공격 아이템의 경우
         {
-            InfoText.text = "골드가 부족합니다.";
-            if (isGoldTxt == true)
+            if (MyInfo.m_Gold - GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_Price >= 0)
             {
-                gameObject.SetActive(false);
-                InfoText.text = "구입하시겠습니까?";
+                if (isTry == false)
+                {
+                    isTry = true;
+                    if (m_AttUnitState == AttUnitState.BeforeBuy)
+                    {
+                        StartCoroutine(BuyOkFunc());    // 구매로 넘어가도록                    
+                    }
+                    else
+                    {
+                        StartCoroutine(UpdateFunc());
+                    }
+                }
+                else
+                {
+                    InfoText.text = "구매 작업을 진행중입니다. 기다리세요";
+                }
             }
+            else
+            {
+                InfoText.text = "골드가 부족합니다.";
+                if (isGoldTxt == true)
+                {
+                    gameObject.SetActive(false);
+                    InfoText.text = "구입하시겠습니까?";
+                }
 
 
-            isGoldTxt = !isGoldTxt;
-            
-        }
+                isGoldTxt = !isGoldTxt;
+
+            }
+        }// else if (buy_isAttack == 1)
     }
 
     //구매 취소 함수
@@ -181,48 +217,24 @@ public class MessageDlgCtrl : MonoBehaviour
     }
 
     IEnumerator UpdateFunc()
-    {
+    {        
         WWWForm form = new WWWForm();
         form.AddField("Input_ItemName", buy_ItemName, System.Text.Encoding.UTF8);
         form.AddField("Input_Level", buy_Level);
         form.AddField("Input_ID", MyInfo.m_No);        
 
         UnityWebRequest request = UnityWebRequest.Post(UpdateItemUrl, form);
-        yield return request.SendWebRequest();
-
+        yield return request.SendWebRequest();        
         // 업데이트가 성공할 경우, UI 업데이트
         if (request.error == null)
-        {
+        {            
             System.Text.Encoding enc = System.Text.Encoding.UTF8;
             string a_ReStr = enc.GetString(request.downloadHandler.data);
             if (a_ReStr.Contains("Success"))
-            {
+            {                ;
                 // 글로벌 메모리 바꿔주는 부분
-                if (buy_isAttack == 0) // 방어 부분
-                {
-                    GlobalValue.m_DefUnitItem[buy_KindOfItem - 1].m_Level = buy_Level;
-                    GlobalValue.m_DefUnitItem[buy_KindOfItem - 1].m_Att =
-                         GlobalValue.m_DefUnitItem[buy_KindOfItem - 1].m_Att + buy_Level * GlobalValue.UnitIncreValue;
+                GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_Level = buy_Level;
 
-                    GlobalValue.m_DefUnitItem[buy_KindOfItem - 1].m_Def =
-                         GlobalValue.m_DefUnitItem[buy_KindOfItem - 1].m_Def + buy_Level * GlobalValue.UnitIncreValue;
-
-                    GlobalValue.m_DefUnitItem[buy_KindOfItem - 1].m_Hp =
-                         GlobalValue.m_DefUnitItem[buy_KindOfItem - 1].m_Hp + buy_Level * GlobalValue.UnitIncreValue;
-                }
-                else 
-                {
-                    GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_Level = buy_Level;
-                    GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_Att =
-                         GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_Att + buy_Level * GlobalValue.UnitIncreValue;
-
-                    GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_Def =
-                         GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_Def + buy_Level * GlobalValue.UnitIncreValue;
-
-                    GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_Hp =
-                         GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_Hp + buy_Level * GlobalValue.UnitIncreValue;
-                }
-                
                 // UI 초기화
                 // 메모리 바꿔주는 부분
                 if (buy_isAttack == 0)  //방어 상점 유닛 구매 시
@@ -240,7 +252,7 @@ public class MessageDlgCtrl : MonoBehaviour
                     DSNodeCtrlRef.ReSetState(buy_Level);
                 }
                 else                    // 공격 상점 유닛 구매 시
-                {
+                {                    
                     storeMgrRef.ResetAttState();
                     MyInfo.m_Gold = MyInfo.m_Gold - GlobalValue.m_AttUnitUserItem[buy_KindOfItem - 1].m_UpPrice;
                     if (ASNodeCtrlRef == null) 
@@ -252,10 +264,10 @@ public class MessageDlgCtrl : MonoBehaviour
 
                     ASNodeCtrlRef.ReSetState(buy_Level);
                 }
-
+                
                 GlobalValue.GetInstance().UpdateGold(); //골드 DB 갱신
                 storeMgrRef.UpdateGold();               //골드 UI 출력
-
+                isTry = false;
                 gameObject.SetActive(false);                
             }
             else

@@ -64,14 +64,20 @@ public class TowerInfoMgr : MonoBehaviour
 
     public void UserInfoBtnClick(int _index)
     {
+        int Attack = (int)GlobarValue.g_UserTowerList[_index].m_TowerAttack;
+        int Def = (int)GlobarValue.g_UserTowerList[_index].m_TowerDefence;
+        Attack = Attack + (Attack * (GlobarValue.g_UserTowerList[_index].m_UnitLevel - 1) / 10);
+        Def = Def + (Def * (GlobarValue.g_UserTowerList[_index].m_UnitLevel - 1) / 10);
+
         m_UnitName.text = "이름 : " + GlobarValue.g_UserTowerList[_index].m_TowerName;
-        m_UnitAttack.text = "공격력 : " + GlobarValue.g_UserTowerList[_index].m_TowerAttack.ToString();
-        m_UnitDefance.text = "방어력 : " + GlobarValue.g_UserTowerList[_index].m_TowerDefence.ToString();
+        m_UnitAttack.text = "공격력 : " + Attack.ToString();
+        m_UnitDefance.text = "방어력 : " + Def.ToString();
         m_UnitHP.text = "체력 : " + GlobarValue.g_UserTowerList[_index].m_TowerHP.ToString();
         m_UnitAttSpd.text = "공격속도 : " + GlobarValue.g_UserTowerList[_index].m_TowerAttSpeed.ToString();
         m_UnitPrice.text = "가격 : " + GlobarValue.g_UserTowerList[_index].m_TowerPrice.ToString();
         m_UnitUpPrice.text = "업그레이드 가격 : " + GlobarValue.g_UserTowerList[_index].m_TowerUpPrice.ToString();
-        m_UnitImg.sprite = m_TowerImgList[_index];
+        int TypeIndex = (int)GlobarValue.g_UserTowerList[_index].m_TowerType;
+        m_UnitImg.sprite = m_TowerImgList[TypeIndex];
 
         string a_Kind = "";
         //-----------------수정

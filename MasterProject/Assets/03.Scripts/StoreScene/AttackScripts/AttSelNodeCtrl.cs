@@ -71,9 +71,9 @@ public class AttSelNodeCtrl : MonoBehaviour
         else if (isBuyState == AttUnitState.Active)
         {
             UnitLevelText.text = $"업단계 : {UnitLevel}";
-            UnitHPText.text = $"체력 : {UnitHp + UnitLevel * GlobalValue.UnitIncreValue}";
-            UnitAttText.text = $"공격력 : {UnitAtt + UnitLevel * GlobalValue.UnitIncreValue}";
-            UnitDefText.text = $"방어력 : {UnitDef + UnitLevel * GlobalValue.UnitIncreValue}";
+            UnitHPText.text = $"체력 : {UnitHp + (UnitHp * (UnitLevel - 1)) / GlobalValue.UnitIncreValue}";
+            UnitAttText.text = $"공격력 : {UnitAtt + (UnitAtt * (UnitLevel - 1)) / GlobalValue.UnitIncreValue}";
+            UnitDefText.text = $"방어력 : {UnitDef + (UnitDef * (UnitLevel - 1)) / GlobalValue.UnitIncreValue}";
             UnitBuyBtnText.text = $"업그레이드";
         }
 
@@ -129,13 +129,13 @@ public class AttSelNodeCtrl : MonoBehaviour
     void BuyFunc()
     {
         if (DlgParent != null)
-        {
+        {           
             DlgObj = DlgParent.transform.Find("MessageDlg").gameObject;
             if (DlgObj != null)
             {
                 DlgObj.SetActive(true);
                 if (buyState == AttUnitState.BeforeBuy)
-                {
+                {                    
                     DlgObj.GetComponent<MessageDlgCtrl>().price = m_ItemPrice;
                     DlgObj.GetComponent<MessageDlgCtrl>().m_AttUnitState = buyState;
                     // 구매를 위한 맴버변수들 초기화
@@ -146,7 +146,7 @@ public class AttSelNodeCtrl : MonoBehaviour
                     DlgObj.GetComponent<MessageDlgCtrl>().buy_ItemUsable = m_Usable;
                 }
                 else if (buyState == AttUnitState.Active)
-                {
+                {                    
                     DlgObj.GetComponent<MessageDlgCtrl>().buy_ItemNo = m_ItemNo;
                     DlgObj.GetComponent<MessageDlgCtrl>().price = m_ItemUpPrice;
                     DlgObj.GetComponent<MessageDlgCtrl>().m_AttUnitState = buyState;
@@ -154,7 +154,7 @@ public class AttSelNodeCtrl : MonoBehaviour
                     DlgObj.GetComponent<MessageDlgCtrl>().buy_KindOfItem = m_UnitId;    // 유저아이디
                     DlgObj.GetComponent<MessageDlgCtrl>().buy_isAttack = m_isAttack;    // 공격 유닛인지                    
                     // 여기서부터 데이터 증가 시작
-                    DlgObj.GetComponent<MessageDlgCtrl>().buy_Level = m_Level + 1;
+                    DlgObj.GetComponent<MessageDlgCtrl>().buy_Level = m_Level + 1;                    
                     DlgObj.GetComponent<MessageDlgCtrl>().buy_ItemUsable = m_Usable;    // 사용 갯수
                 }
             }//if (DlgObj != null) 
@@ -167,12 +167,14 @@ public class AttSelNodeCtrl : MonoBehaviour
         if (Level > 0)
             buyState = AttUnitState.Active;
 
+        m_Level = Level;
         UnitLevelText.text = (buyState == AttUnitState.BeforeBuy) ? $"Buy!!" : $"업단계 : {Level}";
-        UnitHPText.text = $"체력 : {m_Hp + Level * GlobalValue.UnitIncreValue}";
-        UnitAttText.text = $"공격력 : {m_Att + Level * GlobalValue.UnitIncreValue}";
-        UnitDefText.text = $"방어력 : {m_Def + Level * GlobalValue.UnitIncreValue}";
+        UnitHPText.text = $"체력 : {m_Hp + (m_Hp * (Level - 1)) / GlobalValue.UnitIncreValue}";
+        UnitAttText.text = $"공격력 : {m_Att + (m_Att * (Level - 1)) / GlobalValue.UnitIncreValue}";
+        UnitDefText.text = $"방어력 : {m_Def + (m_Def * (Level - 1)) / GlobalValue.UnitIncreValue}";
         UnitAttSpeedText.text = $"공격속도 : {m_AttSpeed}";
         UnitSpeedText.text = $"이동속도 :{m_Speed}";
         UnitMoveAbleText.text = $"배치수량 : {m_Usable}";
+        UnitBuyBtnText.text = (buyState == AttUnitState.BeforeBuy) ? $"구매" : $"업그레이드";
     }
 }

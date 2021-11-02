@@ -36,9 +36,11 @@ public class StartEndCtrl : MonoBehaviour
     string UpdateRecordUrl = "http://pmaker.dothome.co.kr/TeamProject/InGameScene/UpdateRecord.php";
     string strWinLose = "";
     bool isUpdate = false;
+    bool isUpdateComplete = false;
 
     void Start()
     {
+        //m_GoToLobbyBtn.gameObject.SetActive(false);
         Inst = this;
         m_PlayTimeTxt.gameObject.SetActive(false);
         m_GameEndPanel.SetActive(false);
@@ -82,6 +84,9 @@ public class StartEndCtrl : MonoBehaviour
             }
 
             GameEndCall(strWinLose);
+
+            m_GoToLobbyBtn.gameObject.SetActive(isUpdateComplete);
+
         }
         // Debug.Log(g_GameState);
     }
@@ -92,9 +97,10 @@ public class StartEndCtrl : MonoBehaviour
     {
         if (isUpdate == false)
         {
+            isUpdate = true;
+
             if (a_StrWL.Contains("win") == true)
             {
-
                 GameMgr.Inst.GoldTextSett(300);
                 StartCoroutine(UpdateRecordCo(MyInfo.m_No, "win", GameMgr.Inst.m_GetGold));
                 StartCoroutine(UpdateRecordCo(GlobalValue.SO_Info.m_No, "lose", 0));
@@ -109,27 +115,26 @@ public class StartEndCtrl : MonoBehaviour
 
     IEnumerator UpdateRecordCo(int a_UserNo, string a_StrWL, int a_GetGold)
     {
-        int a_Gold = MyInfo.m_Gold + a_GetGold;        
+        int a_Gold = MyInfo.m_Gold + a_GetGold;
         WWWForm form = new WWWForm();
         form.AddField("Input_user", a_UserNo);
         form.AddField("Input_Record", a_StrWL, System.Text.Encoding.UTF8);
         form.AddField("Input_Gold", a_Gold);
 
         UnityWebRequest a_www = UnityWebRequest.Post(UpdateRecordUrl, form);
-        isUpdate = true;
         yield return a_www.SendWebRequest(); // 응답이 올때까지 대기
 
         if (a_www.error == null) // 에러가 나지 않는다면
         {
             System.Text.Encoding enc = System.Text.Encoding.UTF8;
             string sz = enc.GetString(a_www.downloadHandler.data);
-            if (sz.Contains("Update_Record") == false)
+            if (sz.Contains("Update_Record") == true)
             {
                 yield break;
             }
+            isUpdateComplete = true;
         }
     }
-
 
     // 게임 준비시 카운트 함수
     void ReadyStateFunc()
@@ -137,7 +142,8 @@ public class StartEndCtrl : MonoBehaviour
         if (0 < m_WaitTime)
         {
             if (m_StartCountTxt != null)
-                m_StartCountTxt.text = ((int)m_WaitTime).ToString();
+                m_StartCountTxt.text = ((int)
+                        m_WaitTime).ToString();
 
             m_WaitTime = m_WaitTime - Time.deltaTime;
         }

@@ -12,9 +12,8 @@ public class RandomItemCtrl : MonoBehaviour
         tr = this.transform;
         tr.localScale = new Vector3(2.0f, 2.0f, 2.0f);
 
-        if (LobbyMgr.m_isAttack == 0 && LobbyMgr.m_GetRandomItemNo == 3)
+        if (LobbyMgr.m_isAttack == 0 && LobbyMgr.m_GetRandomItemNo == 2)
             tr.localScale = new Vector3(1, 1, 1);
-
     }
 
     // Update is called once per frame

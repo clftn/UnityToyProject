@@ -346,12 +346,15 @@ public class TowerCtrl_Team : MonoBehaviour
         {
             a_level = 0;
             int m_idex = i;
+            int HP = 0;
+            int AttackDamage = 0;
             if (GlobarValue.g_VsUserTowerList[m_idex].m_TowerType == m_TowerType)
             {
                 a_level = GlobarValue.g_VsUserTowerList[m_idex].m_UnitLevel;
-                m_MaxHP = GlobarValue.g_VsUserTowerList[m_idex].m_TowerHP * a_level;
-                Debug.Log(GlobarValue.g_VsUserTowerList[m_idex].m_TowerHP);
-                m_AttackRate = GlobarValue.g_VsUserTowerList[m_idex].m_TowerAttack * a_level;
+                HP = GlobarValue.g_VsUserTowerList[m_idex].m_TowerHP;
+                m_MaxHP = HP + (HP * (a_level - 1) / 10);
+                AttackDamage = GlobarValue.g_VsUserTowerList[m_idex].m_TowerAttack;
+                m_AttackRate = AttackDamage + (AttackDamage * (a_level - 1) / 10);
                 break;
             }
         }

@@ -41,6 +41,8 @@ public class AttackSetting : MonoBehaviour
     string SaveNodeUrl = "";
     bool m_Saveing = false;
 
+    public GameObject m_SaveDonePanel = null;
+    public Button m_SaveDonePanelOkBtn = null;
 
     public bool IsValidIndex(int a_Index) => a_Index >= 0 && a_Index < m_SlotGroup.Length;                       // 인덱스가 수용 범위에 있는지 확인
     public void SetItemIcon(int a_Index, Sprite a_Icon) => m_SlotGroup[a_Index].SetItem(a_Icon);                 // 아이템 아이콘 등록
@@ -83,6 +85,15 @@ public class AttackSetting : MonoBehaviour
 
         if (m_Clear_Btn != null)
             m_Clear_Btn.onClick.AddListener(ClearTeam);
+
+        if (m_SaveDonePanelOkBtn != null)
+        {
+            m_SaveDonePanelOkBtn.onClick.AddListener(() =>
+            {
+                if (m_SaveDonePanel.activeSelf == true)
+                    m_SaveDonePanel.SetActive(false);
+            });
+        }
 
         LoadTeamNode();
 
@@ -294,6 +305,7 @@ public class AttackSetting : MonoBehaviour
     void ReviseTeam()
     {
         StartCoroutine(UpdateMyCo(m_TeamNodeNumber));
+        m_SaveDonePanel.SetActive(true);
     }
 
     int a_FindIndex = -1;

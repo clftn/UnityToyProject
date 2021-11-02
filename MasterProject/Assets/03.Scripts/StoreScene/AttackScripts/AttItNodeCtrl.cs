@@ -67,57 +67,57 @@ public class AttItNodeCtrl : MonoBehaviour
 
     }
 
-    public void InitData(AttUnitkind a_UnitType)
+    public void InitData(int ItIndex)
     {
-        if (a_UnitType < AttUnitkind.Unit_0 || AttUnitkind.UnitCount <= a_UnitType)
+        if((AttUnitkind)ItIndex < AttUnitkind.Unit_0 || AttUnitkind.UnitCount <= (AttUnitkind)ItIndex)
             return;
 
-        m_Unitkind = a_UnitType;
+        m_Unitkind = (AttUnitkind)ItIndex;
         //m_UnitIconImg.sprite = GlobalValue.m_ItDataList[(int)a_ItType].m_IconImg; //<- 이미지 넣는 곳, 나중에 리소스 받으면 넣을 것
         //m_ItIconImg.GetComponent<RectTransform>().sizeDelta = new Vector2(GlobalValue.m_ItDataList[(int)a_ItType].m_IconSize.x * 135.0f, 135.0f);
 
         // 맴버 변수 초기화
-        m_Name = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Name;
-        m_Price = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Price;
-        m_UpPrice = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_UpPrice;
-        m_Level = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Level;
-        m_Att = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Att;
-        m_Hp = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Hp;
-        m_Def = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Def;
-        m_AttSpeed = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_AttSpeed;
-        m_Speed = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Speed;
-        m_Moveable = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].ItemUsable;
-        m_ItemNo = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_UnitNo;
+        m_Name = GlobalValue.m_AttUnitUserItem[ItIndex].m_Name;
+        m_Price = GlobalValue.m_AttUnitUserItem[ItIndex].m_Price;
+        m_UpPrice = GlobalValue.m_AttUnitUserItem[ItIndex].m_UpPrice;
+        m_Level = GlobalValue.m_AttUnitUserItem[ItIndex].m_Level;
+        m_Att = GlobalValue.m_AttUnitUserItem[ItIndex].m_Att;
+        m_Hp = GlobalValue.m_AttUnitUserItem[ItIndex].m_Hp;
+        m_Def = GlobalValue.m_AttUnitUserItem[ItIndex].m_Def;
+        m_AttSpeed = GlobalValue.m_AttUnitUserItem[ItIndex].m_AttSpeed;
+        m_Speed = GlobalValue.m_AttUnitUserItem[ItIndex].m_Speed;
+        m_Moveable = GlobalValue.m_AttUnitUserItem[ItIndex].ItemUsable;
+        m_ItemNo = GlobalValue.m_AttUnitUserItem[ItIndex].m_UnitNo;
 
         // UI 관련 제어
-        m_NameText.text = GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Name;
-        m_UnitLevelText.text = $"Level : {GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Level}";
-        m_UnitPriceText.text = $"{GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Price}";
-        m_UnitAttText.text = $"유닛 공격력 : {GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Att}";
-        m_UnitHPText.text = $"유닛 HP : {GlobalValue.m_AttUnitUserItem[(int)a_UnitType].m_Hp}";
+        m_NameText.text = GlobalValue.m_AttUnitUserItem[ItIndex].m_Name;
+        m_UnitLevelText.text = $"Level : {GlobalValue.m_AttUnitUserItem[ItIndex].m_Level}";
+        m_UnitPriceText.text = $"{GlobalValue.m_AttUnitUserItem[ItIndex].m_Price}";
+        m_UnitAttText.text = $"유닛 공격력 : {GlobalValue.m_AttUnitUserItem[ItIndex].m_Att + (GlobalValue.m_AttUnitUserItem[ItIndex].m_Att * (GlobalValue.m_AttUnitUserItem[ItIndex].m_Level - 1)) / GlobalValue.UnitIncreValue}";
+        m_UnitHPText.text = $"유닛 HP : {GlobalValue.m_AttUnitUserItem[ItIndex].m_Hp + (GlobalValue.m_AttUnitUserItem[ItIndex].m_Hp * (GlobalValue.m_AttUnitUserItem[ItIndex].m_Level - 1)) / GlobalValue.UnitIncreValue}";
 
         // 사진 이미지 넣기
-        if (a_UnitType == AttUnitkind.Unit_0)
+        if ((AttUnitkind)ItIndex == AttUnitkind.Unit_0)
         {
             // 노말 탱크
             m_UnitIconImg.sprite = Resources.Load("StoreImg/NomalTankImg", typeof(Sprite)) as Sprite;
         }
-        else if (a_UnitType == AttUnitkind.Unit_1) 
+        else if ((AttUnitkind)ItIndex == AttUnitkind.Unit_1) 
         {
             // 스피드 탱크
             m_UnitIconImg.sprite = Resources.Load("StoreImg/SpeedTankImg", typeof(Sprite)) as Sprite;
         }
-        else if (a_UnitType == AttUnitkind.Unit_2)
+        else if ((AttUnitkind)ItIndex == AttUnitkind.Unit_2)
         {
             // 힐링 탱크
             m_UnitIconImg.sprite = Resources.Load("StoreImg/RepairTankImg", typeof(Sprite)) as Sprite;
         }
-        else if (a_UnitType == AttUnitkind.Unit_3)
+        else if ((AttUnitkind)ItIndex == AttUnitkind.Unit_3)
         {
             // 쉴드 탱크
             m_UnitIconImg.sprite = Resources.Load("StoreImg/ShieldTankImg", typeof(Sprite)) as Sprite;
         }
-        else if (a_UnitType == AttUnitkind.Unit_4)
+        else if ((AttUnitkind)ItIndex == AttUnitkind.Unit_4)
         {
             // 캐논 탱크
             m_UnitIconImg.sprite = Resources.Load("StoreImg/CannonTankImg", typeof(Sprite)) as Sprite;
@@ -139,9 +139,9 @@ public class AttItNodeCtrl : MonoBehaviour
         {
             m_UnitPriceText.text = m_UpPrice.ToString();
             m_UnitIconImg.color = new Color32(255, 255, 255, 255); //new Color32(110, 110, 110, 255);
-            m_UnitLevelText.text = $"Level : {m_Level}";
-            m_UnitAttText.text = $"유닛 공격력 : {m_Att + m_Level * GlobalValue.UnitIncreValue}";
-            m_UnitHPText.text = $"유닛 HP : {m_Hp + m_Level * GlobalValue.UnitIncreValue}";
+            m_UnitLevelText.text = $"Level : {m_Level}";            
+            m_UnitAttText.text = $"유닛 공격력 : {m_Att + (m_Att * (m_Level - 1)) / GlobalValue.UnitIncreValue}";
+            m_UnitHPText.text = $"유닛 HP : {m_Hp + (m_Hp * (m_Level - 1)) / GlobalValue.UnitIncreValue}";
         }
     }//public void SetState(CrState a_CrState, int a_Price, int a_Lv = 0)
 }

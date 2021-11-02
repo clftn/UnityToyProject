@@ -171,7 +171,7 @@ public class StoreMgr : MonoBehaviour
             {
                 m_AttItemObj = (GameObject)Instantiate(m_AttItem_NodeObj);
                 m_AttNode = m_AttItemObj.GetComponent<AttItNodeCtrl>();
-                m_AttNode.InitData(GlobalValue.m_AttUnitUserItem[i].m_unitkind);
+                m_AttNode.InitData(i);
                 m_AttNode.SetState((AttUnitState)GlobalValue.m_AttUnitUserItem[i].m_isBuy, GlobalValue.m_AttUnitUserItem[i].m_Level);
                 m_AttItemObj.transform.SetParent(m_AttItem_ScrollContent.transform, false);
             }

@@ -73,9 +73,9 @@ public class DefSelNodeCtrl : MonoBehaviour
         else if (isBuyState == AttUnitState.Active)
         {
             UnitLevelText.text = $"업단계 : {UnitLevel}";
-            UnitHPText.text = $"체력 : {UnitHp + UnitLevel * GlobalValue.UnitIncreValue}";
-            UnitAttText.text = $"공격력 : {UnitAtt + UnitLevel * GlobalValue.UnitIncreValue}";
-            UnitDefText.text = $"방어력 : {UnitDef + UnitLevel * GlobalValue.UnitIncreValue}";
+            UnitHPText.text = $"체력 : {UnitHp + (UnitHp * (UnitLevel - 1) / GlobalValue.UnitIncreValue)}";
+            UnitAttText.text = $"공격력 : {UnitAtt + (UnitAtt * (UnitLevel - 1) / GlobalValue.UnitIncreValue)}";
+            UnitDefText.text = $"방어력 : {UnitDef + (UnitDef * (UnitLevel - 1) / GlobalValue.UnitIncreValue)}";
             UnitBuyBtnText.text = $"업그레이드";
         }
 
@@ -137,12 +137,15 @@ public class DefSelNodeCtrl : MonoBehaviour
         if (Level > 0)
             buyState = AttUnitState.Active;
 
+        m_Level = Level;
         UnitLevelText.text = (buyState == AttUnitState.BeforeBuy) ? $"Buy!!" : $"업단계 : {Level}";
-        UnitHPText.text = $"체력 : {m_Hp + Level * GlobalValue.UnitIncreValue}";
-        UnitAttText.text = $"공격력 : {m_Att + Level * GlobalValue.UnitIncreValue}";
-        UnitDefText.text = $"방어력 : {m_Def + Level * GlobalValue.UnitIncreValue}";
+        UnitHPText.text = $"체력 : {m_Hp + (m_Hp * (Level - 1) / GlobalValue.UnitIncreValue)}";
+        UnitAttText.text = $"공격력 : {m_Att + (m_Att * (Level - 1) / GlobalValue.UnitIncreValue)}";
+        UnitDefText.text = $"방어력 : {m_Def + (m_Def * (Level - 1) / GlobalValue.UnitIncreValue)}";
         UnitAttSpeedText.text = $"공격속도 : {m_AttSpeed}";
         UnitSpeedText.text = $"이동속도 :{m_Speed}";
         UnitMoveAbleText.text = $"배치수량 : {m_Usable}";
+
+        UnitBuyBtnText.text = (buyState == AttUnitState.BeforeBuy) ? $"구매" : $"업그레이드";
     }
 }
