@@ -28,7 +28,6 @@ public class MoveTank : MonoBehaviour
     public GameObject target;
 
     bool m_MoveOnOff = true;
-
     [HideInInspector]public int m_TankNumber = 0;
 
     float m_HP = 0.0f;

@@ -213,7 +213,6 @@ public class GameMgr : MonoBehaviour
 
     void SpawnTower()
     {
-        Debug.Log("타워를 스폰해죠! 이놈의 타워를 : " + m_UserSellMap);        
         for (int i = 0; i < GlobarValue.g_MapList[m_UserSellMap].m_SpawnPoint.Length; i++)
         {
             if (GlobarValue.g_MapList[m_UserSellMap].m_SpawnPoint[i] == true)

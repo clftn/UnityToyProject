@@ -226,7 +226,7 @@ public class StoreMgr : MonoBehaviour
                 m_DefNode = m_DefItemObj.GetComponent<DefItNodeCtrl>();             //컴포넌트 할당
                 if (m_DefUnitSpt[(int)GlobalValue.m_DefUnitItem[i].m_unitkind] != null)
                     GlobalValue.m_DefUnitItem[(int)GlobalValue.m_DefUnitItem[i].m_unitkind].m_IconImg = m_DefUnitSpt[(int)GlobalValue.m_DefUnitItem[i].m_unitkind];
-                m_DefNode.InitData(GlobalValue.m_DefUnitItem[i].m_unitkind);
+                m_DefNode.InitData(GlobalValue.m_DefUnitItem[i].m_unitkind);                
                 m_DefNode.SetState((AttUnitState)GlobalValue.m_DefUnitItem[i].m_isBuy, GlobalValue.m_DefUnitItem[i].m_Level);
                 m_DefItemObj.transform.SetParent(m_DefItem_ScrollContent.transform, false);
             }
@@ -248,6 +248,7 @@ public class StoreMgr : MonoBehaviour
             if (m_DefItemObjs[i].m_Unitkind != GlobalValue.m_DefUnitItem[i].m_unitkind)
                 continue;
 
+            m_DefItemObjs[i].InitData(GlobalValue.m_DefUnitItem[i].m_unitkind);
             m_DefItemObjs[i].SetState((AttUnitState)GlobalValue.m_DefUnitItem[i].m_isBuy, GlobalValue.m_DefUnitItem[i].m_Level);
         }//for (int i = 0;i< GlobalValue.m_AttUnitUserItem.Count;i++)
     }

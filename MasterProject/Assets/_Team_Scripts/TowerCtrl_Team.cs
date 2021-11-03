@@ -258,6 +258,7 @@ public class TowerCtrl_Team : MonoBehaviour
             if (m_TowerType == TowerType.Emp_Tower) 
             {
                 TankCtrl a_TankCtrl = other.GetComponent<TankCtrl>();
+                a_TankCtrl.BackUpmoveVelocity = a_TankCtrl.moveVelocity;
                 a_TankCtrl.moveVelocity = 5.0f;
             }
             //---------------추가
@@ -297,7 +298,7 @@ public class TowerCtrl_Team : MonoBehaviour
 
                 //---------------추가
                 if (m_TowerType == TowerType.Emp_Tower)
-                    a_MoveTank.moveVelocity = 10.0f;
+                    a_MoveTank.moveVelocity = a_MoveTank.BackUpmoveVelocity;
                 //---------------추가
 
                 if (_index == a_MoveTank.m_TankNumber)

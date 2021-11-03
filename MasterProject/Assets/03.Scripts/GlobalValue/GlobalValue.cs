@@ -40,6 +40,9 @@ public class GlobalValue : MonoBehaviour
     }
     IEnumerator UpdateGoldCo()
     {
+        if (MyInfo.m_ID == "")
+            yield break;
+
         UpGoldDataLock = true;
         WWWForm form = new WWWForm();
         form.AddField("Input_ID", MyInfo.m_ID, System.Text.Encoding.UTF8);
@@ -98,6 +101,9 @@ public class GlobalValue : MonoBehaviour
 
     IEnumerator GetStoreAttData() 
     {
+        if (MyInfo.m_ID == "")
+            yield break;
+
         GetAttDataLock = true;  // 네트워크 중복 안되는 조치
         WWWForm form = new WWWForm();
         form.AddField("Input_ID", MyInfo.m_No);        
@@ -181,8 +187,12 @@ public class GlobalValue : MonoBehaviour
                         // 2중 for문이긴 한데, 여기서 중복 체크를 한번 한다.
                         foreach (var tpitem in m_AttUnitUserItem)
                         {
-                            if (tpitem.m_unitkind == (AttUnitkind)i)
+                            if (tpitem.m_unitkind == (AttUnitkind)i) 
+                            {
                                 isInsert = true;
+                                break;
+                            }
+                            
                         }
 
                         if (isInsert == true)
@@ -234,11 +244,11 @@ public class GlobalValue : MonoBehaviour
 
                 isAttDataInit = true;   // 데이터 저장 성공
 
-                //// 성공했는지 로그 찍어보기
-                //for (int i = 0; i< m_AttUnitUserItem.Count;i++) 
-                //{
-                //    Debug.Log($"{m_AttUnitUserItem[i].m_Name}\n");
-                //}
+                // 성공했는지 로그 찍어보기
+                for (int i = 0; i< m_AttUnitUserItem.Count;i++) 
+                {
+                    Debug.Log($"{m_AttUnitUserItem[i].m_Name}\n");
+                }
             }//if (a_ReStr.Contains("Get_Item_Success~") == true)
             else 
             {                
@@ -326,6 +336,9 @@ public class GlobalValue : MonoBehaviour
     //방어 상점 유닛 저장 및 초기화 코루틴
     IEnumerator GetStoreDefData()
     {
+        if (MyInfo.m_ID == "")
+            yield break;
+
         GetDefDataLock = true;  // 네트워크 중복 안되는 조치
 
         DefUnit a_UserUtNew;

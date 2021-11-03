@@ -174,7 +174,7 @@ public class AttSelNodeCtrl : MonoBehaviour
         UnitDefText.text = $"방어력 : {m_Def + (m_Def * (Level - 1)) / GlobalValue.UnitIncreValue}";
         UnitAttSpeedText.text = $"공격속도 : {m_AttSpeed}";
         UnitSpeedText.text = $"이동속도 :{m_Speed}";
-        UnitMoveAbleText.text = $"배치수량 : {m_Usable}";
+        UnitMoveAbleText.text = $"최대 배치수량 : {m_Usable}";
         UnitBuyBtnText.text = (buyState == AttUnitState.BeforeBuy) ? $"구매" : $"업그레이드";
     }
 }

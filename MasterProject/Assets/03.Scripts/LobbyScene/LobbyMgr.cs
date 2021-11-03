@@ -117,6 +117,12 @@ public class LobbyMgr : MonoBehaviour
         GlobalValue.m_AttUnitUserItem.Clear();
         GlobalValue.m_DefUnitItem.Clear();
 
+        GlobarValue.UserNumber = 1;
+        GlobarValue.g_MapList.Clear();
+        GlobarValue.g_UnitListInfo.Clear();
+        GlobarValue.g_UserTowerList.Clear();
+        GlobarValue.g_VsUserTowerList.Clear();
+
         MyInfo.m_No = 0;
         MyInfo.m_ID = "";
         MyInfo.m_Nick = "";
@@ -149,6 +155,7 @@ public class LobbyMgr : MonoBehaviour
                                                + JSONResult["UserInfo"][0]["UserDefeat"].AsInt + "패";
 
                 m_UserGoldText.text = "보유 골드 : " + JSONResult["UserInfo"][0]["UserGold"].AsInt;
+                MyInfo.m_Gold = JSONResult["UserInfo"][0]["UserGold"].AsInt;
             }
 
             if (JSONResult["Ranking"]["RkCount"] != null)

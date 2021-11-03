@@ -9,7 +9,9 @@ public class TankCtrl : MonoBehaviour
     // 기본 탱크 정보 변수
     public int level = 0;
     public TankType m_Type = TankType.Normal;      // 탱크타입
-    [HideInInspector] public float moveVelocity = 10.0f;             // 이동속도
+    [HideInInspector] public float moveVelocity = 10.0f;             // 이동속도\
+    [HideInInspector] public float BackUpmoveVelocity = 0.0f;
+
     float atk = 0.0f;                       // 공격력
     float def = 0.0f;                       // 방어력
     float attRate = 0.0f;                   // 공격 속도
@@ -866,7 +868,7 @@ public class TankCtrl : MonoBehaviour
             curHp = maxHp;
             hp_Img.fillAmount = 1.0f;
             curPathIndex = 1;
-
+            moveVelocity = BackUpmoveVelocity;
             isMoveOn = true;
             addTimeCount = 0.0f;
             //ClearPath();

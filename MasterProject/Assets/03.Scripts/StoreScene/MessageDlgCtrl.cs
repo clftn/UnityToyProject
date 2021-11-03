@@ -146,6 +146,8 @@ public class MessageDlgCtrl : MonoBehaviour
 
     IEnumerator BuyOkFunc()
     {
+        if (MyInfo.m_ID == "")
+            yield break;
 
         // 골드 차감 부분 추후에 추가
         WWWForm form = new WWWForm();
@@ -217,7 +219,10 @@ public class MessageDlgCtrl : MonoBehaviour
     }
 
     IEnumerator UpdateFunc()
-    {        
+    {
+        if (MyInfo.m_ID == "")
+            yield break;
+
         WWWForm form = new WWWForm();
         form.AddField("Input_ItemName", buy_ItemName, System.Text.Encoding.UTF8);
         form.AddField("Input_Level", buy_Level);
